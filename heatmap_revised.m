@@ -6,41 +6,43 @@
     range = 15;
     confidence_interval = 95;
 end
-n = 100;
-    
+
+
+%convert input T-guesses to kelvin
+T_Bguess = T_B_input+273;
+T_Lguess = T_L_input+273;
+tolerance = (100-confidence_interval)/100; %percent
+
+%measured spectral intensities for each filter    
 B_target1 = 0.1354;
 B_target2 = 0.074;
 B_target3 = 0.1079;
+
+%filter wavenumbers
 filter1 = 833;
 filter2 = 1176;
 filter3 = 944.1;
 
+%ambient temperatures at the time of each filter measurement
 T_S1 = 21.6+273;
 T_S2 = 21.6+273;
 T_S3 = 21.6+273;
 
-
-T_Bguess = T_B_input+273;
-T_Lguess = T_L_input+273;
-rangeB=range;
-rangeL=range;
-step = 0.1;
-tolerance = (100-confidence_interval)/100; %percent
-
+%coefficient values for each filter (hardcoded)
 alpha1=0.011;
 beta1=0.967;
 gamma1=0.021;
 
-% alpha2 = 0.566;
-% beta2 = 0.406;
-% gamma2 = 0.028;
-alpha2=0.69; %OLD VALUES
+alpha2=0.69;
 beta2=0.15;
 gamma2=0.03;
+
 alpha3=0.211;
 beta3=0.767;
 gamma3=0.022;
 
+%set up spacing vectors
+n = 100; %number of samples to take in between range (granularity)
 TLvector = linspace(T_Lguess-range,T_Lguess+range,n);
 TBvector = linspace(T_Bguess-range,T_Bguess+range,n);
 
@@ -66,13 +68,14 @@ for i = 1:n
         error3 = (result3 - B_target3)/B_target3;
         errorvector3(i,j) = error3;
         
-        %debug purposes:
-        indexmatrix(i,j) = string(T_B-273)+", "+string(T_L-273);
+        %index matrix, debug purposes only:
+        %indexmatrix(i,j) = string(T_B-273)+", "+string(T_L-273);
     end
 end
 
-%totalerror = errorvector1+errorvector2+errorvector3;
+%quadrature of errors
 totalerror = errorvector1.^2+errorvector2.^2+errorvector3.^2;
+%heatmap formatting
 clims = [min(min(totalerror)),(1+tolerance)*min(min(totalerror))];
 testclims=[0.1456e-04,0.1531e-04];
 imagesc(TBvector-273,TLvector-273,totalerror, clims)
@@ -82,6 +85,7 @@ grid on
 
 [I,J] = find(totalerror == min(min(totalerror)));
 min(min(totalerror));
-finalTB = TBvector(I)-273;
-finalTL = TLvector(J)-273;
+%print best result to console
+finalTB = TBvector(I)-273
+finalTL = TLvector(J)-273
  end
