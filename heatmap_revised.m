@@ -1,6 +1,15 @@
- function [ totalerror ] = heatmap_revised(T_B_input, T_L_input,range,confidence_interval)
-% EXAMPLE USAGE: plot_heatmap(40,25,10,95);
- if nargin == 0 %use defaults
+function [ totalerror ] = heatmap_revised(T_B_input, T_L_input,range,confidence_interval)
+% HEATMAP PLOTTER FOR AP01_mp // by Henry 2k19
+% Produces heatmap plot of best-solutions for non-linear simultaneous equations of two-layer infrared systems
+% INPUTS:
+%    -T_B_input           = approximate guess for the black body object's tmperature in Celsius
+%    -T_L_input           = approximate guess for the absorbing layer's temperature in Celsius
+%    -range               = range to search for results above and below each guess
+%    -confidence_interval = selectiveness of fit (0.95 = 95% confidence interval)
+%
+% EXAMPLE USAGE: plot_heatmap(40,25,10,95)
+
+if nargin == 0 %use defaults
     T_B_input = 40;
     T_L_input = 25;
     range = 15;
@@ -88,4 +97,4 @@ min(min(totalerror));
 %print best result to console
 finalTB = TBvector(I)-273
 finalTL = TLvector(J)-273
- end
+end
